@@ -12,3 +12,11 @@ repos:
         entry: uv run pytest
         language: system
         pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: security-check
+        name: security scan
+        entry: uv run pip-audit
+        language: system
+        pass_filenames: false
