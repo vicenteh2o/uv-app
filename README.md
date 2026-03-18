@@ -52,6 +52,50 @@ The API will be available at `http://localhost:8000`.
 
 ---
 
+## Health Check Endpoints
+
+The application includes two monitoring endpoints for Kubernetes liveness and readiness probes:
+
+### `/healthz` (Liveness)
+
+- Returns `200 OK` if the process is running
+- Does not check database or external dependencies
+- Use for Kubernetes `livenessProbe` to detect if the pod needs restart
+
+```bash
+curl http://localhost:8000/healthz
+# Response: {"status":"alive"}
+```
+
+### `/readyz` (Readiness)
+
+- Returns `200 OK` if all dependencies (database, external services) are available
+- Returns `503 SERVICE UNAVAILABLE` if any dependency is down
+- Use for Kubernetes `readinessProbe` to control load balancer traffic
+
+```bash
+curl http://localhost:8000/readyz
+# Response: {"database":"healthy","status":"ready"}
+```
+
+### Next Steps
+
+To integrate a real database check, update the `check_database()` function in `app/core/health.py`:
+
+```python
+# Example for PostgreSQL with asyncpg
+async def check_database() -> bool:
+    try:
+        await db.execute("SELECT 1")
+        return True
+    except Exception:
+        return False
+```
+
+Add external service checks in `check_external_services()` for Redis, message queues, APIs, etc.
+
+---
+
 ## Testing
 
 ```bash
