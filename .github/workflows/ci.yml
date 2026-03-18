@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Install Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 3️⃣ Install uv (FAST)
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      # Add uv to PATH
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      # 4️⃣ Install dependencies from lock file
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      # 5️⃣ Lint (Ruff)
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      # 6️⃣ Format check (fails if not formatted)
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      # 7️⃣ Run tests
+      - name: Run tests
+        run: uv run pytest
+
+      # 8️⃣ Security vulnerability scan
+      - name: Security audit
+        run: uv run pip-audit
