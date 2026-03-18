@@ -19,6 +19,11 @@ def test2_endpoint():
     return {"message": "This is a test2 endpoint"}
 
 
+@router.get("/test3")
+def test3_endpoint():
+    return {"message": "Test3 endpoint"}
+
+
 @router.get("/healthz")
 async def liveness():
     """
