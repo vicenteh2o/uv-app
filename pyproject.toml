@@ -16,5 +16,22 @@ dev = [
     "pip-audit>=2.10.0",
     "pre-commit>=4.5.1",
     "pytest>=9.0.2",
+    "python-semantic-release>=10.5.3",
     "ruff>=0.15.6",
+]
+
+[tool.semantic_release]
+version_variable = [
+  "pyproject.toml:project.version"
+]
+
+branch = "main"
+upload_to_pypi = false
+build_command = "echo 'build step'"
+commit_message = "chore(release): {version}"
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+  "^docs:",
+  "^chore:"
 ]
