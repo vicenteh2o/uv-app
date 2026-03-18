@@ -1,0 +1,50 @@
+version: 2
+
+updates:
+  # -----------------------------
+  # Python dependencies (uv/pip)
+  # -----------------------------
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "America/Asuncion"
+
+    # Limit PR noise
+    open-pull-requests-limit: 5
+
+    # Group updates together (clean PR list)
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+    # Labels added automatically
+    labels:
+      - "dependencies"
+      - "python"
+
+    # Commit message style
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+    # Ignore major breaking upgrades (recommended)
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+
+  # -----------------------------
+  # GitHub Actions updates
+  # -----------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+    labels:
+      - "dependencies"
+      - "ci"
