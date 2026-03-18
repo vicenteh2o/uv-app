@@ -9,6 +9,11 @@ def home():
     return {"message": "Hello from uv 🚀"}
 
 
+@router.get("/test")
+def test_endpoint():
+    return {"message": "This is a test endpoint"}
+
+
 @router.get("/healthz")
 async def liveness():
     """
