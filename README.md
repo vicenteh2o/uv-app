@@ -123,3 +123,45 @@ Configured in [.pre-commit-config.yaml](.pre-commit-config.yaml). Runs automatic
 | `ruff-format`    | ruff      | Enforces consistent code formatting      |
 | `pytest`         | pytest    | Runs the full test suite                 |
 | `security-check` | pip-audit | Audits dependencies for known CVEs       |
+
+---
+
+## Contributing — PR merge strategy
+
+This project uses [`python-semantic-release`](https://python-semantic-release.readthedocs.io/) v10 to automate version bumping and changelog generation. It reads commit messages on `main` and applies [Conventional Commits](https://www.conventionalcommits.org/) rules to decide the next version.
+
+### ⚠️ Always use **Squash and merge**
+
+When merging a Pull Request, **always select "Squash and merge"** in the GitHub UI. This ensures the PR title (which must follow Conventional Commits format) becomes the single commit message on `main`.
+
+Examples of valid PR titles:
+
+| Type | Example PR title | Effect |
+| ---- | ---------------- | ------ |
+| New feature | `feat: add user authentication` | bumps **minor** version |
+| Bug fix | `fix: correct null pointer in health check` | bumps **patch** version |
+| Breaking change | `feat!: redesign API response format` | bumps **major** version |
+| Docs / chores | `docs: update README` / `chore: bump deps` | no version bump (excluded) |
+
+> **Why not "Create a merge commit"?**
+> GitHub's default merge commit message is `Merge pull request #N from owner/branch`, which is not a Conventional Commit and will be ignored by semantic-release — no new version will be generated.
+
+> **Why not "Rebase and merge"?**
+> This works only if **every individual commit** on the branch follows Conventional Commits. Squash and merge is simpler and less error-prone.
+
+### Enforcing squash merges via repository settings
+
+Repository admins can enforce squash-only merges:
+1. Go to **Settings → General → Pull Requests**.
+2. Uncheck **Allow merge commits** and **Allow rebase merging**.
+3. Keep only **Allow squash merging** checked and set the default commit message to **Pull request title**.
+
+### Initial base tag
+
+`python-semantic-release` requires a base git tag to calculate the next version. The initial tag `v0.1.0` must exist on `main`. If it is missing, create it manually:
+
+```bash
+# Tag the current HEAD of main (replace <sha> with the actual commit SHA if needed)
+git tag v0.1.0
+git push origin v0.1.0
+```

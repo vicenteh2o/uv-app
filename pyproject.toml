@@ -21,14 +21,16 @@ dev = [
 ]
 
 [tool.semantic_release]
-version_variable = [
-  "pyproject.toml:project.version"
-]
+version_toml = ["pyproject.toml:project.version"]
+commit_message = "chore(release): {version} [skip ci]"
 
-branch = "main"
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
 upload_to_pypi = false
-build_command = "echo 'build step'"
-commit_message = "chore(release): {version}"
 
 [tool.semantic_release.changelog]
 exclude_commit_patterns = [
